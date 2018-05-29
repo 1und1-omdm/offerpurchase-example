@@ -5,7 +5,7 @@
       <bpmn:outgoing>SequenceFlow_1bfzz82</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="EndEvent_1u0c22l" name="Process finished">
-      <bpmn:incoming>SequenceFlow_02gi6jm</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_143ew9z</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1bfzz82" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_0v1gzdw" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_0v1gzdw" name="is new customer?">
@@ -23,8 +23,9 @@
     <bpmn:exclusiveGateway id="ExclusiveGateway_1nt2xdz">
       <bpmn:incoming>SequenceFlow_02jsutj</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0ry388z</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_02gi6jm</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0yeh9id</bpmn:outgoing>
     </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0yeh9id" sourceRef="ExclusiveGateway_1nt2xdz" targetRef="Task_095fqcc" />
     <bpmn:sequenceFlow id="SequenceFlow_09ii3h5" name="NO" sourceRef="ExclusiveGateway_0v1gzdw" targetRef="ServiceTask_15qbt6t">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${variableResolver.getBool(execution,'newCustomerResult') == false}]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -32,18 +33,25 @@
       <bpmn:incoming>SequenceFlow_0xjccjt</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_02jsutj</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_095fqcc" name="Create new contract" camunda:delegateExpression="${createContractServiceTask}">
+      <bpmn:incoming>SequenceFlow_0yeh9id</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_143ew9z</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:serviceTask id="ServiceTask_15qbt6t" name="Read existing customer" camunda:delegateExpression="${readCustomerServiceTask}">
       <bpmn:incoming>SequenceFlow_09ii3h5</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ry388z</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_0ry388z" sourceRef="ServiceTask_15qbt6t" targetRef="ExclusiveGateway_1nt2xdz" />
-    <bpmn:sequenceFlow id="SequenceFlow_02gi6jm" sourceRef="ExclusiveGateway_1nt2xdz" targetRef="EndEvent_1u0c22l" />
+    <bpmn:sequenceFlow id="SequenceFlow_143ew9z" sourceRef="Task_095fqcc" targetRef="EndEvent_1u0c22l" />
     <bpmn:textAnnotation id="TextAnnotation_1e3upek">    <bpmn:text>INPUT: customerId      OUTPUT: customer</bpmn:text>
 </bpmn:textAnnotation>
     <bpmn:association id="Association_0gcyfsc" sourceRef="ServiceTask_15qbt6t" targetRef="TextAnnotation_1e3upek" />
     <bpmn:textAnnotation id="TextAnnotation_0emqlx8">    <bpmn:text>INPUT: name + lastname OUTPUT: customer</bpmn:text>
 </bpmn:textAnnotation>
     <bpmn:association id="Association_0y5i33v" sourceRef="Task_1eaiw4e" targetRef="TextAnnotation_0emqlx8" />
+    <bpmn:textAnnotation id="TextAnnotation_1udmh7j">    <bpmn:text>INPUT: customerId, productId      OUTPUT: contract</bpmn:text>
+</bpmn:textAnnotation>
+    <bpmn:association id="Association_13oa1ow" sourceRef="Task_095fqcc" targetRef="TextAnnotation_1udmh7j" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="offerPurchase01">
@@ -54,9 +62,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_1u0c22l_di" bpmnElement="EndEvent_1u0c22l">
-        <dc:Bounds x="814" y="230" width="36" height="36" />
+        <dc:Bounds x="970" y="230" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="792" y="270" width="81" height="12" />
+          <dc:Bounds x="948" y="270" width="81" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1bfzz82_di" bpmnElement="SequenceFlow_1bfzz82">
@@ -92,6 +100,13 @@
           <dc:Bounds x="712" y="277" width="0" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0yeh9id_di" bpmnElement="SequenceFlow_0yeh9id">
+        <di:waypoint xsi:type="dc:Point" x="737" y="248" />
+        <di:waypoint xsi:type="dc:Point" x="791" y="248" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="719" y="227" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_09ii3h5_di" bpmnElement="SequenceFlow_09ii3h5">
         <di:waypoint xsi:type="dc:Point" x="457" y="223" />
         <di:waypoint xsi:type="dc:Point" x="457" y="136" />
@@ -102,6 +117,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_01cllkb_di" bpmnElement="Task_1eaiw4e">
         <dc:Bounds x="542" y="208" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0nnoduq_di" bpmnElement="Task_095fqcc">
+        <dc:Bounds x="791" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_15qbt6t_di" bpmnElement="ServiceTask_15qbt6t">
         <dc:Bounds x="542" y="96" width="100" height="80" />
@@ -128,11 +146,18 @@
         <di:waypoint xsi:type="dc:Point" x="592" y="288" />
         <di:waypoint xsi:type="dc:Point" x="592" y="373" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_02gi6jm_di" bpmnElement="SequenceFlow_02gi6jm">
-        <di:waypoint xsi:type="dc:Point" x="737" y="248" />
-        <di:waypoint xsi:type="dc:Point" x="814" y="248" />
+      <bpmndi:BPMNShape id="TextAnnotation_1udmh7j_di" bpmnElement="TextAnnotation_1udmh7j">
+        <dc:Bounds x="743" y="374" width="195" height="43" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_13oa1ow_di" bpmnElement="Association_13oa1ow">
+        <di:waypoint xsi:type="dc:Point" x="842" y="288" />
+        <di:waypoint xsi:type="dc:Point" x="844" y="374" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_143ew9z_di" bpmnElement="SequenceFlow_143ew9z">
+        <di:waypoint xsi:type="dc:Point" x="891" y="248" />
+        <di:waypoint xsi:type="dc:Point" x="970" y="248" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="775.5" y="226" width="0" height="13" />
+          <dc:Bounds x="930.5" y="226" width="0" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
